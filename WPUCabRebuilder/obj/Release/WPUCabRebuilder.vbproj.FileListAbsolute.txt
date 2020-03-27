@@ -1,0 +1,16 @@
+D:\WPUCabRebuilder\WPUCabRebuilder\bin\Release\WPUCabRebuilder.exe.config
+D:\WPUCabRebuilder\WPUCabRebuilder\bin\Release\7z.exe
+D:\WPUCabRebuilder\WPUCabRebuilder\bin\Release\WPUCabRebuilder.exe
+D:\WPUCabRebuilder\WPUCabRebuilder\bin\Release\WPUCabRebuilder.pdb
+D:\WPUCabRebuilder\WPUCabRebuilder\bin\Release\WPUCabRebuilder.xml
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\MainWindow.baml
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\MainWindow.g.vb
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\Application.g.vb
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\WPUCabRebuilder_Content.g.vb
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\WPUCabRebuilder_MarkupCompile.cache
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\WPUCabRebuilder.g.resources
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\WPUCabRebuilder.Resources.resources
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\WPUCabRebuilder.vbproj.GenerateResource.Cache
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\WPUCabRebuilder.exe
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\WPUCabRebuilder.xml
+D:\WPUCabRebuilder\WPUCabRebuilder\obj\Release\WPUCabRebuilder.pdb
