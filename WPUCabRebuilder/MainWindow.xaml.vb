@@ -24,6 +24,8 @@ Class MainWindow
         btnBrowseInput.IsEnabled = False
         btnBrowseOutput.IsEnabled = False
         btnStart.IsEnabled = False
+        chkMergeRegistry.IsEnabled = False
+        chkProcRegistry.IsEnabled = False
     End Sub
     Sub UnlockUI()
         txtInputDir.IsEnabled = True
@@ -31,6 +33,8 @@ Class MainWindow
         btnBrowseInput.IsEnabled = True
         btnBrowseOutput.IsEnabled = True
         btnStart.IsEnabled = True
+        chkMergeRegistry.IsEnabled = True
+        chkProcRegistry.IsEnabled = True
     End Sub
     Private Sub SetTaskbarProgess(MaxValue As Integer, MinValue As Integer, CurrentValue As Integer, Optional State As Shell.TaskbarItemProgressState = Shell.TaskbarItemProgressState.Normal)
         If MaxValue <= MinValue Or CurrentValue < MinValue Or CurrentValue > MaxValue Then
@@ -82,6 +86,16 @@ Class MainWindow
 
     Private Sub btnStart_Click(sender As Object, e As RoutedEventArgs) Handles btnStart.Click
         LockUI()
+        If txtInputDir.Text.Trim = "" Then
+            MessageBox.Show("CAB 输入路径不能为空。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            UnlockUI()
+            Exit Sub
+        End If
+        If txtOutputDir.Text.Trim = "" Then
+            MessageBox.Show("输出路径不能为空。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            UnlockUI()
+            Exit Sub
+        End If
         If Not Directory.Exists(OutputDiectory) Then
             Try
                 Directory.CreateDirectory(OutputDiectory)
