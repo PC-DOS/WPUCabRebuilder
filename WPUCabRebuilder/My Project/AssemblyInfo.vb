@@ -11,12 +11,12 @@ Imports System.Windows
 
 ' 檢閱組件屬性的值
 
-<Assembly: AssemblyTitle("WPUCabRebuilder")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("WPUCabRebuilder")> 
-<Assembly: AssemblyCopyright("Copyright ©  2020")> 
-<Assembly: AssemblyTrademark("")> 
+<Assembly: AssemblyTitle("WPUCab 目录结构重建工具")> 
+<Assembly: AssemblyDescription("Windows Phone Update Cab 目录结构重建工具")> 
+<Assembly: AssemblyCompany("PC-DOS Workshop")> 
+<Assembly: AssemblyProduct("WPUCab 目录结构重建工具")> 
+<Assembly: AssemblyCopyright("Copyright © 2013-2020 PC-DOS Workshop")> 
+<Assembly: AssemblyTrademark("PC-DOS Workshop")> 
 <Assembly: ComVisible(false)>
 
 '為了建置可當地語系化的應用程式，請設定 
