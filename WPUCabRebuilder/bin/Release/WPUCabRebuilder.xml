@@ -26,28 +26,6 @@ Application Entry Point.
 	<summary>
 Application
 </summary>
-</member><member name="M:WPUCabRebuilder.TimeStampBuilder.BuildTimeStamp">
-	<summary>
- 生成YYYYMMMDD-HHMM格式的时间戳。
- </summary>
-	<returns></returns>
-	<remarks></remarks>
-</member><member name="F:WPUCabRebuilder.ApplicationFileSystemInfo.CurrentDirectory">
-	<summary>
- 表示应用程序的当前工作路径。
- </summary>
-	<remarks></remarks>
-</member><member name="M:WPUCabRebuilder.ApplicationFileSystemInfo.GenerateCurrentDirectory">
-	<summary>
- 产生应用程序的当前工作路径。
- </summary>
-	<remarks></remarks>
-</member><member name="M:WPUCabRebuilder.ApplicationFileSystemInfo.GetCurrentDirectory">
-	<summary>
- 获取应用程序的当前工作路径。
- </summary>
-	<returns>字符串值，表示应用程序的当前工作路径。</returns>
-	<remarks></remarks>
 </member><member name="P:WPUCabRebuilder.My.MyWpfExtension.Application">
 	<summary>
  傳回執行中應用程式的應用程式物件
@@ -73,6 +51,28 @@ Application
 	<summary>
  用來定義 WPF 的 My 命名空間中可用屬性的模組
  </summary>
+	<remarks></remarks>
+</member><member name="F:WPUCabRebuilder.ApplicationFileSystemInfo.CurrentDirectory">
+	<summary>
+ 表示应用程序的当前工作路径。
+ </summary>
+	<remarks></remarks>
+</member><member name="M:WPUCabRebuilder.ApplicationFileSystemInfo.GenerateCurrentDirectory">
+	<summary>
+ 产生应用程序的当前工作路径。
+ </summary>
+	<remarks></remarks>
+</member><member name="M:WPUCabRebuilder.ApplicationFileSystemInfo.GetCurrentDirectory">
+	<summary>
+ 获取应用程序的当前工作路径。
+ </summary>
+	<returns>字符串值，表示应用程序的当前工作路径。</returns>
+	<remarks></remarks>
+</member><member name="M:WPUCabRebuilder.TimeStampBuilder.BuildTimeStamp">
+	<summary>
+ 生成YYYYMMMDD-HHMM格式的时间戳。
+ </summary>
+	<returns></returns>
 	<remarks></remarks>
 </member><member name="P:WPUCabRebuilder.My.Resources.Resources.ResourceManager">
 	<summary>

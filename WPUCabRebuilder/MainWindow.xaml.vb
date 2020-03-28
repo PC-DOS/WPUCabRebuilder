@@ -40,6 +40,8 @@ Class MainWindow
         btnStart.IsEnabled = False
         chkMergeRegistry.IsEnabled = False
         chkProcRegistry.IsEnabled = False
+        chkMergeRegistryMainOSOnly.IsEnabled = False
+        chkUsePartition.IsEnabled = False
     End Sub
     Sub UnlockUI()
         txtInputDir.IsEnabled = True
@@ -49,6 +51,8 @@ Class MainWindow
         btnStart.IsEnabled = True
         chkMergeRegistry.IsEnabled = True
         chkProcRegistry.IsEnabled = True
+        chkMergeRegistryMainOSOnly.IsEnabled = chkMergeRegistry.IsEnabled
+        chkUsePartition.IsEnabled = True
     End Sub
     Private Sub SetTaskbarProgess(MaxValue As Integer, MinValue As Integer, CurrentValue As Integer, Optional State As Shell.TaskbarItemProgressState = Shell.TaskbarItemProgressState.Normal)
         If MaxValue <= MinValue Or CurrentValue < MinValue Or CurrentValue > MaxValue Then
