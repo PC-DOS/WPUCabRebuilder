@@ -7,6 +7,9 @@ Class MainWindow
     Dim OutputDiectory As String
     Dim EmptyList As New List(Of String)
     Dim MessageList As New List(Of String)
+    Dim IsLogginEnabled As Boolean = True
+    Dim LogTimeStamp As String
+    Dim ApplicationDirectory As String
     Sub RefreshMessageList()
         lstMessage.ItemsSource = EmptyList
         lstMessage.ItemsSource = MessageList
@@ -17,6 +20,17 @@ Class MainWindow
         RefreshMessageList()
         lstMessage.SelectedIndex = lstMessage.Items.Count - 1
         lstMessage.ScrollIntoView(lstMessage.SelectedItem)
+        If IsLogginEnabled Then
+            Try
+                Dim LogFileStream As New StreamWriter(ApplicationDirectory & "WPUCabRebuilderRuntimeLog_" & LogTimeStamp & ".log", True)
+                LogFileStream.WriteLine(Now.ToShortTimeString & ":")
+                LogFileStream.WriteLine(MessageText)
+                LogFileStream.Flush()
+                LogFileStream.Close()
+            Catch ex As Exception
+
+            End Try
+        End If
     End Sub
     Sub LockUI()
         txtInputDir.IsEnabled = False
@@ -151,7 +165,7 @@ Class MainWindow
         For Each CabFilePath In Directory.EnumerateFiles(InputDirectory, "*.cab", SearchOption.TopDirectoryOnly)
             Dim TempFilePath As String
             TempFilePath = CabFilePath.Substring(0, CabFilePath.Length - 4) & "\"
-            AddMessage("正在解压缩 CAB 文件""" & CabFilePath & "到""" & TempFilePath & """。")
+            AddMessage("正在解压缩 CAB 文件""" & CabFilePath & """到""" & TempFilePath & """。")
             If Directory.Exists(TempFilePath) Then
                 Try
                     Directory.Delete(TempFilePath, True)
@@ -195,6 +209,25 @@ Class MainWindow
 
             Dim nsMgr As New XmlNamespaceManager(UpdateInfoFile.NameTable)
             nsMgr.AddNamespace("ns", "http://schemas.microsoft.com/embedded/2004/10/ImageUpdate")
+
+            Dim PartitionNode As XmlNode = UpdateInfoFile.SelectSingleNode("/ns:Package/ns:Partition", nsMgr)
+            AddMessage("正在定位 XML 节点""/Package/Partition""。")
+            If IsNothing(PartitionNode) Then
+                AddMessage("XML 节点定位失败，退出操作。")
+                nFail += 1
+                prgProgress.Value += 1
+                SetTaskbarProgess(prgProgress.Maximum, 0, prgProgress.Value)
+                Try
+                    Directory.Delete(TempFilePath, True)
+                Catch ex2 As Exception
+
+                End Try
+                Continue For
+            End If
+            Dim PartitionName As String
+            PartitionName = PartitionNode.InnerText
+            AddMessage("XML 节点""/Package/PartitionName""定位成功，CAB 包""" & CabFilePath & """适用于分区""" & PartitionName & """。")
+
             Dim CustomInformationNode As XmlNode = UpdateInfoFile.SelectSingleNode("/ns:Package/ns:Files", nsMgr)
             AddMessage("正在定位 XML 节点""/Package/Files""。")
             If IsNothing(CustomInformationNode) Then
@@ -221,7 +254,7 @@ Class MainWindow
                 Try
                     With TempFileInfo
                         .CabPath = TempFilePath & FileElement.GetElementsByTagName("CabPath")(0).InnerText
-                        .DevicePath = OutputDiectory & FileElement.GetElementsByTagName("DevicePath")(0).InnerText
+                        .DevicePath = OutputDiectory & IIf(chkUsePartition.IsChecked, PartitionName & "\", "") & FileElement.GetElementsByTagName("DevicePath")(0).InnerText
                         .FileType = FileElement.GetElementsByTagName("FileType")(0).InnerText
                     End With
                     Dim CopyDest As String = GetPathFromFile(TempFileInfo.DevicePath)
@@ -238,9 +271,11 @@ Class MainWindow
                         Dim FileContent As String
                         FileContent = InputFileStream.ReadToEnd()
                         FileContent = FileContent.Replace("[HKEY_LOCAL_MACHINE\SYSTEM]", "[HKEY_LOCAL_MACHINE\RTSYSTEM]")
+                        FileContent = FileContent.Replace("[HKEY_LOCAL_MACHINE\System]", "[HKEY_LOCAL_MACHINE\RTSystem]")
                         FileContent = FileContent.Replace("[HKEY_LOCAL_MACHINE\SOFTWARE]", "[HKEY_LOCAL_MACHINE\RTSOFTWARE]")
                         FileContent = FileContent.Replace("[HKEY_LOCAL_MACHINE\Software]", "[HKEY_LOCAL_MACHINE\RTSoftware]")
                         FileContent = FileContent.Replace("[HKEY_LOCAL_MACHINE\SYSTEM\", "[HKEY_LOCAL_MACHINE\RTSYSTEM\")
+                        FileContent = FileContent.Replace("[HKEY_LOCAL_MACHINE\System\", "[HKEY_LOCAL_MACHINE\RTSystem\")
                         FileContent = FileContent.Replace("[HKEY_LOCAL_MACHINE\SOFTWARE\", "[HKEY_LOCAL_MACHINE\RTSOFTWARE\")
                         FileContent = FileContent.Replace("[HKEY_LOCAL_MACHINE\Software\", "[HKEY_LOCAL_MACHINE\RTSoftware\")
                         Dim OutputFileStream As New IO.StreamWriter(TempFileInfo.DevicePath, False)
@@ -250,19 +285,21 @@ Class MainWindow
                         InputFileStream.Close()
                     End If
                     If chkMergeRegistry.IsChecked And (TempFileInfo.FileType = "Registry" Or TempFileInfo.FileType = "RegistryMultiStringAppend") Then
-                        Dim InputFileStream As New IO.StreamReader(TempFileInfo.DevicePath)
-                        Dim FileContent As String
-                        FileContent = InputFileStream.ReadToEnd()
-                        FileContent = FileContent.Replace("Windows Registry Editor Version 5.00", "")
-                        InputFileStream.Close()
-                        If Not FileContent.Contains("[HKEY_LOCAL_MACHINE\BCD") Then
-                            Dim OutputFileStream As New IO.StreamWriter(OutputDiectory & "import.reg", True)
-                            OutputFileStream.WriteLine(";Registry File imported from " & TempFileInfo.CabPath.Replace(InputDirectory, ""))
-                            OutputFileStream.WriteLine(";You can find original file at " & TempFileInfo.DevicePath.Replace(OutputDiectory, ""))
-                            OutputFileStream.WriteLine(FileContent)
-                            OutputFileStream.WriteLine()
-                            OutputFileStream.Flush()
-                            OutputFileStream.Close()
+                        If (Not chkMergeRegistryMainOSOnly.IsChecked) Or (chkMergeRegistryMainOSOnly.IsChecked And PartitionName = "MainOS") Then
+                            Dim InputFileStream As New IO.StreamReader(TempFileInfo.DevicePath)
+                            Dim FileContent As String
+                            FileContent = InputFileStream.ReadToEnd()
+                            FileContent = FileContent.Replace("Windows Registry Editor Version 5.00", "")
+                            InputFileStream.Close()
+                            If Not FileContent.Contains("[HKEY_LOCAL_MACHINE\BCD") Then
+                                Dim OutputFileStream As New IO.StreamWriter(OutputDiectory & "import.reg", True)
+                                OutputFileStream.WriteLine(";Registry File imported from " & TempFileInfo.CabPath.Replace(InputDirectory, ""))
+                                OutputFileStream.WriteLine(";You can find original file at " & TempFileInfo.DevicePath.Replace(OutputDiectory, ""))
+                                OutputFileStream.WriteLine(FileContent)
+                                OutputFileStream.WriteLine()
+                                OutputFileStream.Flush()
+                                OutputFileStream.Close()
+                            End If
                         End If
                     End If
                     DoEvents()
@@ -301,5 +338,10 @@ Class MainWindow
             .Value = 0
         End With
         SetTaskbarProgess(100, 0, 0)
+    End Sub
+
+    Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        LogTimeStamp = BuildTimeStamp() & "_" & (New Random).Next.ToString
+        ApplicationDirectory = GetCurrentDirectory()
     End Sub
 End Class
