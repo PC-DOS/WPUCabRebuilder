@@ -308,17 +308,9 @@ Class MainWindow
                     End If
                     DoEvents()
                 Catch ex As Exception
-                    AddMessage("处理 CAB 包""" & CabFilePath & """时发生错误: " & ex.Message)
-                    nFail += 1
-                    prgProgress.Value += 1
-                    SetTaskbarProgess(prgProgress.Maximum, 0, prgProgress.Value)
-                    Try
-                        Directory.Delete(TempFilePath, True)
-                    Catch ex2 As Exception
-
-                    End Try
+                    AddMessage("从""" & TempFileInfo.CabPath & """复制文件到""" & TempFileInfo.DevicePath & """时发生错误: " & ex.Message)
                     IsErrorOccurred = True
-                    Exit For
+                    Continue For
                 End Try
             Next
             If Not IsErrorOccurred Then
@@ -331,10 +323,20 @@ Class MainWindow
                 nSuccess += 1
                 prgProgress.Value += 1
                 SetTaskbarProgess(prgProgress.Maximum, 0, prgProgress.Value)
+            Else
+                AddMessage("处理 CAB 包""" & CabFilePath & """时发生一个或多个错误。")
+                nFail += 1
+                prgProgress.Value += 1
+                SetTaskbarProgess(prgProgress.Maximum, 0, prgProgress.Value)
+                Try
+                    Directory.Delete(TempFilePath, True)
+                Catch ex2 As Exception
+
+                End Try
             End If
         Next
 
-        MessageBox.Show("操作完成，共有 " & nSuccess.ToString & "个文件被成功复制，有 " & nIgnored.ToString & " 个文件被忽略，处理 " & nFail.ToString & " 个文件时出错。", "大功告成!", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("操作完成，共有 " & nSuccess.ToString & "个 CAB 包被成功处理，有 " & nIgnored.ToString & " 个 CAB 包被忽略，处理 " & nFail.ToString & " 个 CAB 包时出错。", "大功告成!", MessageBoxButtons.OK, MessageBoxIcon.Information)
         UnlockUI()
         With prgProgress
             .Minimum = 0
